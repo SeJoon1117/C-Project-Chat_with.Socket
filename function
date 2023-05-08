@@ -1,0 +1,96 @@
+socket() 함수 > 소켓을 생성한다. (소켓은 네트워크 통신)
+형태: int socket(int domain, int type, int protocol)
+  1.	int domain = 인터넷을 통해 통신할 지, 같은 시스템 내에서 프로세스끼리 통신할 지의 여부를 설정
+    PF_INET, AF_INET = IPv4 인터넷 프로토콜을 사용
+    PF_INET6 = IPv6 인터넷 프로토콜을 사용
+    PF_LOCAL, AF_UNIX = 같은 시스템 내에서 프로세스끼리 통신
+    PF_PACKET = Low level socket을 인터페이스를 이용합니다.
+    PF_IPX = IPX 노벨 프로토콜을 사용합니다.
+
+  2.	int type = 데이터의 전송 현태 지정
+    SOCK_STREAM = TCP/IP 프로토콜을 이용
+    SOCK_DGRAM = UDP/IP 프로토콜을 이용
+
+  3.	int protocol = 통신에 있어 특정 프로토콜을 사용을 지정하기 위한 변수이며, 보통 0 값을 사용합니다. 
+    반환: -1==실패, -1 이외 소켓 디스크 립터는 성공
+
+sockaddr , sockaddr_in 이라는 구조체가 정의되어 있음
+  sockaddr은 소켓의 주소를 담는 기본 구조체 틀의 역할
+    u_short sa_family;	> 주소체계
+    char sa_data[14]	> 해당 주소체계에서 사용하는 주소 정보
+
+  sockaddr_in은 IPv4 주소를 저장하는 구조체! 제일 많이 사용됨
+    sa_family_t	    sin_family;	  > 주소체계를 저장하는 필드
+    uint16_t 	    	sin_port;	  	> 포트 정보를 저장
+    struct in_addr 	sin_addr;	  	> IPv4 주소를 저장
+    char 		        sin_zero[8];	> 사용하지 않는 필드 0으로 차 있음
+
+bind() 함수 > 주소를 바인딩 한다. (소켓을 시스템에 장착. 소켓은 외부와 통신을 위해 사용됨)
+형태: int bind(
+    SOCKET s,
+    const struct sockaddr* name,
+    int namelen
+); > 성공: 0, 실패: SOCKET_ERROR
+
+listen() 함수 > 클라이언트의 접속을 기다린다. (무한으로 돌림) (외부와 TCP연결을 할 수 있도록 큐를 만들고 대기)
+형태: int listen(
+    SOCKET s,
+    int backlog
+); > 성공: 0, 실패: SOCKET_ERROR 
+
+accept() 함수 > 클라이언트의 접속을 수락한다.
+형태: SOCKET accept(
+    SOCKET s,
+    struct sockaddr*addr,
+    int *addrlen
+); > 성공: 새로운 소켓, 실패: INVALID_SOCKET
+
+connect() 함수 > 서버에게 접속하여 TCP 프로토콜 수준의 연결 설정
+형태: int connect(
+    SOCKET s,
+    const struct sockaddr* name,
+    int namelen
+); > 성공: 0, 실패: SOCKET_ERROR
+
+<아래 두개는 서로 상호작용>
+-	send() 함수 > 클라이언트와 데이터를 주고받는다
+형태: int send(
+    SOCKET s,
+    const char *buf,
+    int len
+    int flags
+); > 성공: 보낸 바이트 수, 실패: SOCKET_ERROR
+
+-	recv() 함수 > 클라이언트와 데이터를 주고받는다 - 언제든지 받을 수 있게 thread 로 진행
+형태: int recv(
+    SOCKET s,
+    char *buf,
+    int len
+    int flags
+); > 성공: 받은 바이트 수 또는 0(연결 종료 시), 실패: SOCKET_ERROR
+
+closesocket() 함수 > 클라이언트와의 연결을 종료한다 (해당 프로세스의 소켓을 닫음)
+형태: int closesocket(SOCKET s);
+
+memset() 함수 > 메모리의 내용을 원하는 크기만큼 특정 값으로 세팅할 수 있는 함수
+형태: void* memset(void *ptr, int value, size_t num);
+    	세팅하고자 하는 메모리의 시작주소.
+    	메모리에 세팅하고자 하는 값
+    	메모리의 크기 한 조각 단위의 길이
+
+#include<pthread.h>
+pthread 함수
+  int pthread_create(pthread_t * restrict thread,
+    const pthread_attr_t *restrict attr,
+    void *(*start_routine)(void *),
+		void *restrict arg);
+    
+      매개변수 정보
+        pthread_t *restrict thread
+		      스레드의 식별자
+	      const pthread_attr_t *restrict attr
+		      설정할 스레드 속성정보(NULL 입력시 기본설정 적용)
+	      void *(*start_routine)(void *)
+		      스레드가 실행할 함수
+	      void *restrict arg
+		      스레드가 실행할 함수에 들어갈 인자
