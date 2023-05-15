@@ -20,10 +20,10 @@ sockaddr , sockaddr_in 이라는 구조체가 정의되어 있음
     char sa_data[14]	> 해당 주소체계에서 사용하는 주소 정보
 
   sockaddr_in은 IPv4 주소를 저장하는 구조체! 제일 많이 사용됨
-    sa_family_t	    sin_family;	  > 주소체계를 저장하는 필드
-    uint16_t 	    	sin_port;	  	> 포트 정보를 저장
-    struct in_addr 	sin_addr;	  	> IPv4 주소를 저장
-    char 		        sin_zero[8];	> 사용하지 않는 필드 0으로 차 있음
+    sa_family_t		sin_family;		> 주소체계를 저장하는 필드
+    uint16_t		sin_port;		> 포트 정보를 저장
+    struct in_addr	sin_addr;		> IPv4 주소를 저장
+    char		sin_zero[8];		> 사용하지 않는 필드 0으로 차 있음
 
 bind() 함수 > 주소를 바인딩 한다. (소켓을 시스템에 장착. 소켓은 외부와 통신을 위해 사용됨)
 형태: int bind(
