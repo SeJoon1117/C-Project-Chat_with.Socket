@@ -17,8 +17,8 @@ socket() 함수		//소켓을 생성한다. (소켓은 네트워크 통신)
 		//exit("수") C프로그램 자체를 완전 종료하는 기능(주로, 1을 사용)
 
 sockaddr {		//구조체는 소켓의 주소를 담는 기본 구조체 틀의 역할
-    u_short sa_family;		//주소체계
-    char sa_data[14];		//해당 주소체계에서 사용하는 주소 정보
+    u_short		sa_family;		//주소체계
+    char		sa_data[14];		//해당 주소체계에서 사용하는 주소 정보
 }
 
 sockaddr_in {		//구조체는 IPv4(AF_INET) 주소를 저장하는 구조체! 제일 많이 사용됨
@@ -92,12 +92,15 @@ memset() 함수		//메모리의 내용을 원하는 크기만큼 특정 값으�
  2. int value			//메모리에 세팅하고자 하는 값
  3. size_t num			//메모리의 크기 한 조각 단위의 길이
  
-WSAStartup() 함수
+WSAStartup() 함수		//윈속의 초기화 (처음에 한번만 호출)
 형태: int WSAStartup(WORD wVersionRequired, LPWSADATA lpWSAData);
  1. WORD wVersionRequired	//프로그램에서 사용할 소켓이 버전 정보를 전달
  2. LPWSADATA lpWSAData		//WSADATA 구조체 변수의 주소값을 전달
 	반환 = 성공: 0, 실패: 0이 아닌 에러 코드 반환
- ㅡㅡㅡ
+	
+WSACleanup() 함수		//윈속의 기능을 종료 (프로그램의 마지막이나 종료처리에서 실행)
+
+ㅡㅡㅡ
  
 #include<pthread.h>
 pthread 함수
