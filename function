@@ -7,21 +7,21 @@ socket() 함수		//소켓을 생성한다. (소켓은 네트워크 통신)
 	PF_PACKET		//Low level socket을 인터페이스를 이용합니다.
 	PF_IPX			//IPX 노벨 프로토콜을 사용합니다.
 
- 2. int type			//데이터의 전송 현태 지정
+ 2. int type		//데이터의 전송 현태 지정
 	SOCK_STREAM		//TCP/IP 프로토콜을 이용
 	SOCK_DGRAM		//UDP/IP 프로토콜을 이용
 
- 3. int protocol		//통신에 있어 특정 프로토콜을 사용을 지정하기 위한 변수이며, 보통 0 값을 사용합니다.
+ 3. int protocol	//통신에 있어 특정 프로토콜을 사용을 지정하기 위한 변수이며, 보통 0 값을 사용합니다.
 	반환 = 생성되는 도중 에러가 발생하면 0보다 작은 값/INVALID_SOCKET 이 리턴.
 		//perror("메시지") 오류 메시지를 출력
 		//exit("수") C프로그램 자체를 완전 종료하는 기능(주로, 1을 사용)
 
-sockaddr {			//구조체는 소켓의 주소를 담는 기본 구조체 틀의 역할
+sockaddr {		//구조체는 소켓의 주소를 담는 기본 구조체 틀의 역할
     u_short sa_family;		//주소체계
     char sa_data[14];		//해당 주소체계에서 사용하는 주소 정보
 }
 
-sockaddr_in {			//구조체는 IPv4(AF_INET) 주소를 저장하는 구조체! 제일 많이 사용됨
+sockaddr_in {		//구조체는 IPv4(AF_INET) 주소를 저장하는 구조체! 제일 많이 사용됨
     sa_family_t		sin_family;		//주소체계를 저장하는 필드
     uint16_t		sin_port;		//포트 정보를 저장
     struct in_addr	sin_addr;		//IPv4 주소를 저장
@@ -70,10 +70,10 @@ connect() 함수		//서버에게 접속하여 TCP 프로토콜 수준의 연결 
 	(flags의 값이 0이면 일반 데이터를 전송하며, write(sockfd, buf, len)를 호출한 것과 같)
 	반환 = 성공: 보낸 바이트 수, 실패: SOCKET_ERROR
 
- - recv() 함수			//클라이언트와 데이터를 주고받는다 - 언제든지 받을 수 있게 thread 로 진행
+ - recv() 함수		//클라이언트와 데이터를 주고받는다 - 언제든지 받을 수 있게 thread 로 진행
 형태: int recv(SOCKET s, char *buf, int len, int flags);
- 1. SOCKET s,			//connect, accept으로 연결된 소켓(데이터를 받을 대상)
- 2. char *buf,			//데이터를 읽어 저장할 버퍼
+ 1. SOCKET s			//connect, accept으로 연결된 소켓(데이터를 받을 대상)
+ 2. char *buf			//데이터를 읽어 저장할 버퍼
  3. int len			//읽을 데이터 크기
  4. int flags			//읽을 데이터 유형 또는 읽는 방법에 대한 옵션
  	 MSG_OOB : out of band(긴급데이터) 데이터를 읽습니다. 주로 X.25에서 접속이 끊겼을 때에 전송되는 데이터
@@ -81,16 +81,24 @@ connect() 함수		//서버에게 접속하여 TCP 프로토콜 수준의 연결 
 	 MSG_WAITALL : 읽으려는 데이터가 buffer에 찰 때까지 대기함
 	 (flags의 값이 0이면 일반 데이터를 수신하며, read(sockfd, buf, len)을 호출한 것과 같음음)
 	반환 = 성공: 받은 바이트 수 또는 0(연결 종료 시), 실패: SOCKET_ERROR
-ㅡㅡㅡ
-closesocket() 함수	클라이언트와의 연결을 종료한다 (해당 프로세스의 소켓을 닫음)
+
+closesocket() 함수	//클라이언트와의 연결을 종료한다 (해당 프로세스의 소켓을 닫음)
 형태: int closesocket(SOCKET s);
-
-memset() 함수				//메모리의 내용을 원하는 크기만큼 특정 값으로 세팅할 수 있는 함수
+	반환 = 성공: 0, 실패: SOCKET_ERROR
+	
+memset() 함수		//메모리의 내용을 원하는 크기만큼 특정 값으로 세팅할 수 있는 함수
 형태: void* memset(void *ptr, int value, size_t num);
-    	세팅하고자 하는 메모리의 시작주소.
-    	메모리에 세팅하고자 하는 값
-    	메모리의 크기 한 조각 단위의 길이
-
+ 1. void *ptr			//세팅하고자 하는 메모리의 시작주소
+ 2. int value			//메모리에 세팅하고자 하는 값
+ 3. size_t num			//메모리의 크기 한 조각 단위의 길이
+ 
+WSAStartup() 함수
+형태: int WSAStartup(WORD wVersionRequired, LPWSADATA lpWSAData);
+ 1. WORD wVersionRequired	//프로그램에서 사용할 소켓이 버전 정보를 전달
+ 2. LPWSADATA lpWSAData		//WSADATA 구조체 변수의 주소값을 전달
+	반환 = 성공: 0, 실패: 0이 아닌 에러 코드 반환
+ ㅡㅡㅡ
+ 
 #include<pthread.h>
 pthread 함수
   int pthread_create(pthread_t * restrict thread,
@@ -107,9 +115,3 @@ pthread 함수
 		      스레드가 실행할 함수
 	      void *restrict arg
 		      스레드가 실행할 함수에 들어갈 인자
-
-WSAStartup() 함수
-형태: int WSAStartup(
-    WORD wVersionRequired,
-    LPWSADATA lpWSAData
-);
